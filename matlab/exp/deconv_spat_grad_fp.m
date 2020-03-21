@@ -1,0 +1,13 @@
+function deblur = deconv_spat_grad_fp(blur, kernelF, grad, lambda)
+    %%%%% gradxF and gradyF are global parameters which are defined in 'train'
+    global gradxF;
+    global gradyF;
+    
+    deblur = lambda*fft2(blur).*conj(kernelF) +...
+        fft2(grad(:,:,1,:)).*conj(gradxF) +...
+        fft2(grad(:,:,2,:)).*conj(gradyF);
+    deblur = deblur ./ (lambda*kernelF.*conj(kernelF) +...
+        gradxF.*conj(gradxF) +...
+        gradyF.*conj(gradyF) + 0.0001);
+    deblur = real(ifft2(deblur));
+end
